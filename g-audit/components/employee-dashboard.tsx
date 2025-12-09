@@ -86,8 +86,10 @@ export function EmployeeDashboard() {
   return (
     <div className="space-y-8">
       <div className="flex flex-col gap-2">
-        <h1 className="text-4xl font-bold text-foreground">Employee Dashboard</h1>
-        <p className="text-muted-foreground">Welcome, {user?.name}</p>
+        <h1 className="text-3xl font-semibold text-foreground">Daily Records</h1>
+        
+        <p 
+        className="text-muted-foreground">Welcome, {user?.name}</p>
       </div>
 
       <div className="grid gap-4 md:grid-cols-3">
