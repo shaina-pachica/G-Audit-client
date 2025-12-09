@@ -1,12 +1,6 @@
 'use client'
 import { Button } from '@/components/ui/button'
 import { LogOut, ChevronDown } from 'lucide-react'
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
 import { useRouter } from 'next/navigation'
 
 interface DashboardHeaderProps {
@@ -25,6 +19,12 @@ export function DashboardHeader({
     router.push("/")
   }
 
+  const tabs = [
+    { label: 'Daily', value: 'daily' as const },
+    { label: 'Weekly', value: 'weekly' as const},
+    { label: 'Monthly', value: 'monthly' as const },
+  ]
+
   return (
     <div className="fixed top-0 left-0 right-0 z-50 backdrop-blur-md bg-white/50">
       <div className="flex items-center justify-between h-16 px-4 md:px-8 lg:px-12">
@@ -34,31 +34,20 @@ export function DashboardHeader({
         </div>
 
         {/* Center: View dropdown */}
-        <div className="order-2">
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button
-                variant="outline"
-                size="sm"
-                className="gap-2 bg-white/5 border-white/20 hover:bg-white/10"
-              >
-                {currentView.charAt(0).toUpperCase() + currentView.slice(1)}
-                Dashboard
-                <ChevronDown className="w-4 h-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="center">
-              <DropdownMenuItem onClick={() => onViewChange('daily')}>
-                Daily Dashboard
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => onViewChange('weekly')}>
-                Weekly Dashboard
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => onViewChange('monthly')}>
-                Monthly Dashboard
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+        <div className="flex gap-1 sm:gap-2 bg-white/5 p-1 rounded-lg order-2">
+          {tabs.map((tab) => (
+            <button
+              key={tab.value}
+              onClick={() => onViewChange(tab.value)}
+              className={`px-3 sm:px-4 py-2 text-xs sm:text-sm font-medium rounded-md transition-all duration-300 ${
+                currentView === tab.value
+                  ? 'bg-transparent text-foreground shadow-lg ring-1 ring-white/20 backdrop-blur-0'
+                  : 'text-muted-foreground hover:text-foreground bg-white/5 hover:bg-white/10'
+              }`}
+            >
+              {tab.label}
+            </button>
+          ))}
         </div>
 
         {/* Left side: Upload and Export buttons */}
