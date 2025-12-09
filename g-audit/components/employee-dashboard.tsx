@@ -33,10 +33,6 @@ interface EmployeeDashboardProps {
 }
 
 export function EmployeeDashboard({
-  currentView,
-  onViewChange,
-  onUpload,
-  onExport,
 }: EmployeeDashboardProps) {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [user, setUser] = useState<any>(null);
@@ -53,11 +49,12 @@ export function EmployeeDashboard({
         id: '1',
         type: 'inbound',
         amount: 5000,
-        reference: 'INV-001',
+        reference: '5034222433857',
         description: 'Client payment',
         date: new Date(Date.now() - 86400000).toISOString(),
         status: 'completed',
-        transferFrom: 'GCash 09171234567',
+        transferFrom:
+          'Received GCash from CARD Bank Inc. with account ending in 5408 and invno:20251111CBMFPHM1XXXB000000024058750',
         balance: 15000,
       },
       {
@@ -70,6 +67,39 @@ export function EmployeeDashboard({
         status: 'completed',
         transferFrom: 'Card ending in 5408',
         balance: 13800,
+      },
+      {
+        id: '3',
+        type: 'inbound',
+        amount: 8500,
+        reference: 'INV-002',
+        description: 'Project payment',
+        date: new Date(Date.now() - 86400000).toISOString(),
+        status: 'completed',
+        transferFrom: 'GCash 09189876543',
+        balance: 22300,
+      },
+      {
+        id: '4',
+        type: 'inbound',
+        amount: 3250,
+        reference: 'INV-003',
+        description: 'Service fee payment',
+        date: new Date(Date.now() - 172800000).toISOString(),
+        status: 'completed',
+        transferFrom: 'GCash 09156789012',
+        balance: 25550,
+      },
+      {
+        id: '5',
+        type: 'outbound',
+        amount: 2500,
+        reference: 'EXP-002',
+        description: 'Office supplies',
+        date: new Date(Date.now() - 259200000).toISOString(),
+        status: 'completed',
+        transferFrom: 'BDO Credit Card ending in 4521',
+        balance: 19800,
       },
     ];
     setTransactions(mockTxns);
@@ -143,7 +173,7 @@ export function EmployeeDashboard({
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">$10,000.00</div>
+              <div className="text-2xl font-bold">₱10,000.00</div>
             </CardContent>
           </Card>
 
@@ -158,7 +188,7 @@ export function EmployeeDashboard({
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">
-                ${(10000 + stats.inbound - stats.outbound).toLocaleString()}
+                ₱{(10000 + stats.inbound - stats.outbound).toLocaleString()}
               </div>
             </CardContent>
           </Card>
@@ -174,13 +204,13 @@ export function EmployeeDashboard({
             </CardHeader>
             <CardContent>
               <div
-                className={`text-2xl font-bold ${
+                className={`text-2xl font-bold ₱{
                   stats.inbound - stats.outbound >= 0
                     ? 'text-primary'
                     : 'text-destructive'
                 }`}
               >
-                {stats.inbound - stats.outbound >= 0 ? '+' : '-'}$
+                {stats.inbound - stats.outbound >= 0 ? '+' : '-'}₱
                 {Math.abs(stats.inbound - stats.outbound).toLocaleString()}
               </div>
             </CardContent>
@@ -197,7 +227,7 @@ export function EmployeeDashboard({
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold text-primary">
-                +${stats.inbound.toLocaleString()}
+                +₱{stats.inbound.toLocaleString()}
               </div>
             </CardContent>
           </Card>
@@ -213,7 +243,7 @@ export function EmployeeDashboard({
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold text-destructive">
-                -${stats.outbound.toLocaleString()}
+                -₱{stats.outbound.toLocaleString()}
               </div>
             </CardContent>
           </Card>
@@ -236,7 +266,7 @@ export function EmployeeDashboard({
         {/* Transaction History */}
         <Card className="border-white/20">
           <CardHeader>
-            <CardTitle>Transaction History</CardTitle>
+            <CardTitle className='text-secondary'>Transaction History</CardTitle>
             <CardDescription>Your GCash transactions</CardDescription>
           </CardHeader>
           <CardContent>

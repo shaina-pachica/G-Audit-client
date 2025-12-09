@@ -24,7 +24,7 @@ export default function EmployeeDashboardPage() {
   if (!isAuthenticated) return null
 
   return (
-    <div className="min-h-screen bg-blue-100 flex flex-col">
+    <div className="min-h-screen bg-black/10 flex flex-col">
       <DashboardHeader
         currentView={currentView}
         onViewChange={setCurrentView}

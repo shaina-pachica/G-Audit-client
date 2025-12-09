@@ -1,6 +1,4 @@
 "use client"
-import { Badge } from "@/components/ui/badge"
-
 interface Transaction {
   id: string
   type: "inbound" | "outbound"
@@ -58,22 +56,22 @@ export function TransactionTable({
                 {new Date(tx.date).toLocaleString()}
               </td>
               <td className="py-3 px-4">{tx.transferFrom || '—'}</td>
-              <td className="py-3 px-4 font-mono text-primary">
+              <td className="py-3 px-4 font-mono text-foreground">
                 {tx.reference}
               </td>
               <td
                 className={`py-3 px-4 font-semibold ${
-                  tx.type === 'inbound' ? 'text-primary' : 'text-destructive'
+                  tx.type === 'inbound' ? 'text-green-700' : 'text-destructive'
                 }`}
               >
-                {tx.type === 'inbound' ? '+' : '-'}${tx.amount.toLocaleString()}
+                {tx.type === 'inbound' ? '+' : '-'}{tx.amount.toLocaleString()}
               </td>
               {!isEmployee && (
                 <td className="py-3 px-4">{tx.transferTo || '—'}</td>
               )}
               {isEmployee && (
                 <td className="py-3 px-4">
-                  ${tx.balance?.toLocaleString() || '—'}
+                  {tx.balance?.toLocaleString() || '—'}
                 </td>
               )}
               {showEmployee && <td className="py-3 px-4">{tx.employeeName}</td>}
