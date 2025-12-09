@@ -1,153 +1,255 @@
-"use client"
+'use client';
 
-import { useState, useEffect } from "react"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Upload, CheckCircle, TrendingUp, TrendingDown } from "lucide-react"
-import { TransactionTable } from "./transaction-table"
-import { CSVUploadModal } from "./csv-upload-modal"
+import { useState, useEffect } from 'react';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
+import { Upload, Edit3 } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { TransactionTable } from './transaction-table';
+import { CSVUploadModal } from './csv-upload-modal';
 
 interface Transaction {
-  id: string
-  type: "inbound" | "outbound"
-  amount: number
-  reference: string
-  description: string
-  date: string
-  status: "pending" | "completed" | "failed"
+  id: string;
+  type: 'inbound' | 'outbound';
+  amount: number;
+  reference: string;
+  description: string;
+  date: string;
+  status: 'pending' | 'completed' | 'failed';
+  transferFrom?: string;
+  balance?: number;
 }
 
-export function EmployeeDashboard() {
-  const [transactions, setTransactions] = useState<Transaction[]>([])
-  const [user, setUser] = useState<any>(null)
-  const [showUploadModal, setShowUploadModal] = useState(false)
-  const [stats, setStats] = useState({ inbound: 0, outbound: 0, total: 0 })
+interface EmployeeDashboardProps {
+  currentView: 'daily' | 'weekly' | 'monthly';
+  onViewChange: (view: 'daily' | 'weekly' | 'monthly') => void;
+  onUpload: () => void;
+  onExport: () => void;
+}
+
+export function EmployeeDashboard({
+  currentView,
+  onViewChange,
+  onUpload,
+  onExport,
+}: EmployeeDashboardProps) {
+  const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const [user, setUser] = useState<any>(null);
+  const [showUploadModal, setShowUploadModal] = useState(false);
+  const [stats, setStats] = useState({ inbound: 0, outbound: 0, total: 0 });
 
   useEffect(() => {
-    const userData = localStorage.getItem("user")
-    if (userData) setUser(JSON.parse(userData))
+    const userData = localStorage.getItem('user');
+    if (userData) setUser(JSON.parse(userData));
 
     // Load mock transactions
-    setTransactions([
+    const mockTxns: Transaction[] = [
       {
-        id: "1",
-        type: "inbound",
+        id: '1',
+        type: 'inbound',
         amount: 5000,
-        reference: "INV-001",
-        description: "Client payment",
+        reference: 'INV-001',
+        description: 'Client payment',
         date: new Date(Date.now() - 86400000).toISOString(),
-        status: "completed",
+        status: 'completed',
+        transferFrom: 'GCash 09171234567',
+        balance: 15000,
       },
       {
-        id: "2",
-        type: "outbound",
+        id: '2',
+        type: 'outbound',
         amount: 1200,
-        reference: "EXP-001",
-        description: "Vendor payment",
+        reference: 'EXP-001',
+        description: 'Vendor payment',
         date: new Date().toISOString(),
-        status: "completed",
+        status: 'completed',
+        transferFrom: 'Card ending in 5408',
+        balance: 13800,
       },
-    ])
-
-    updateStats([
-      {
-        id: "1",
-        type: "inbound",
-        amount: 5000,
-        reference: "INV-001",
-        description: "Client payment",
-        date: new Date(Date.now() - 86400000).toISOString(),
-        status: "completed",
-      },
-      {
-        id: "2",
-        type: "outbound",
-        amount: 1200,
-        reference: "EXP-001",
-        description: "Vendor payment",
-        date: new Date().toISOString(),
-        status: "completed",
-      },
-    ])
-  }, [])
+    ];
+    setTransactions(mockTxns);
+    updateStats(mockTxns);
+  }, []);
 
   const updateStats = (txns: Transaction[]) => {
-    const inbound = txns.filter((t) => t.type === "inbound").reduce((sum, t) => sum + t.amount, 0)
-    const outbound = txns.filter((t) => t.type === "outbound").reduce((sum, t) => sum + t.amount, 0)
-    setStats({ inbound, outbound, total: txns.length })
-  }
+    const inbound = txns
+      .filter((t) => t.type === 'inbound')
+      .reduce((sum, t) => sum + t.amount, 0);
+    const outbound = txns
+      .filter((t) => t.type === 'outbound')
+      .reduce((sum, t) => sum + t.amount, 0);
+    setStats({ inbound, outbound, total: txns.length });
+  };
 
   const handleUpload = (newTransactions: Transaction[]) => {
-    setTransactions([...transactions, ...newTransactions])
-    updateStats([...transactions, ...newTransactions])
-    setShowUploadModal(false)
-  }
+    setTransactions([...transactions, ...newTransactions]);
+    updateStats([...transactions, ...newTransactions]);
+    setShowUploadModal(false);
+  };
 
   return (
-    <div className="space-y-8">
-      <div className="flex flex-col gap-2">
-        <h1 className="text-3xl font-semibold text-foreground">Daily Records</h1>
-        
-        <p 
-        className="text-muted-foreground">Welcome, {user?.name}</p>
-      </div>
+    <div className="pt-20 pb-8 px-4 sm:px-6 min-h-screen">
+      <div className="space-y-8 max-w-7xl mx-auto">
+        {/* Top section with user info and action buttons */}
+        <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-6">
+          {/* Left:  */}
+          <div className="text-left">
+            <h1 className="text-3xl font-bold text-foreground">
+              {user?.username || 'User'}'s Dashboard
+            </h1>
+            <p className="text-sm text-muted-foreground mt-1">
+              {new Date().toLocaleDateString('en-US', {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+              })}
+            </p>
+          </div>
 
-      <div className="grid gap-4 md:grid-cols-3">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Inbound Transactions</CardTitle>
-            <TrendingUp className="h-4 w-4 text-primary" />
+          {/* Right:*/}
+          <div className="flex flex-col gap-3">
+            <Button
+              onClick={() => setShowUploadModal(true)}
+              className="gap-2 w-full md:w-auto"
+            >
+              <Upload className="w-4 h-4" />
+              Upload PDF
+            </Button>
+            <Button
+              variant="outline"
+              className="gap-2 w-full md:w-auto bg-white/5 border-white/20 hover:bg-white/10"
+            >
+              <Edit3 className="w-4 h-4" />
+              Enter Data
+            </Button>
+          </div>
+        </div>
+
+        {/* Balance Cards */}
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+          <Card className="backdrop-blur-sm bg-white/10 border-white/20 hover:bg-white/15 transition-colors">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm font-medium text-foreground">
+                Starting Balance
+              </CardTitle>
+              <CardDescription className="text-xs">
+                Opening balance for this period
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">$10,000.00</div>
+            </CardContent>
+          </Card>
+
+          <Card className="backdrop-blur-sm bg-white/10 border-white/20 hover:bg-white/15 transition-colors">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm font-medium text-foreground">
+                Ending Balance
+              </CardTitle>
+              <CardDescription className="text-xs">
+                Balance after all transactions
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">
+                ${(10000 + stats.inbound - stats.outbound).toLocaleString()}
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="backdrop-blur-sm bg-white/10 border-white/20 hover:bg-white/15 transition-colors">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm font-medium text-foreground">
+                Net Flow
+              </CardTitle>
+              <CardDescription className="text-xs">
+                Total inbound minus outbound
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div
+                className={`text-2xl font-bold ${
+                  stats.inbound - stats.outbound >= 0
+                    ? 'text-primary'
+                    : 'text-destructive'
+                }`}
+              >
+                {stats.inbound - stats.outbound >= 0 ? '+' : '-'}$
+                {Math.abs(stats.inbound - stats.outbound).toLocaleString()}
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="backdrop-blur-sm bg-white/10 border-white/20 hover:bg-white/15 transition-colors">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm font-medium text-foreground">
+                Total Inbound
+              </CardTitle>
+              <CardDescription className="text-xs">
+                Total money received
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold text-primary">
+                +${stats.inbound.toLocaleString()}
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="backdrop-blur-sm bg-white/10 border-white/20 hover:bg-white/15 transition-colors">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm font-medium text-foreground">
+                Total Outbound
+              </CardTitle>
+              <CardDescription className="text-xs">
+                Total money sent
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold text-destructive">
+                -${stats.outbound.toLocaleString()}
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="backdrop-blur-sm bg-white/10 border-white/20 hover:bg-white/15 transition-colors">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm font-medium text-foreground">
+                Total Transactions
+              </CardTitle>
+              <CardDescription className="text-xs">
+                Number of transactions uploaded
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{stats.total}</div>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Transaction History */}
+        <Card className="border-white/20">
+          <CardHeader>
+            <CardTitle>Transaction History</CardTitle>
+            <CardDescription>Your GCash transactions</CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">${stats.inbound.toLocaleString()}</div>
-            <p className="text-xs text-muted-foreground">Total received</p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Outbound Transactions</CardTitle>
-            <TrendingDown className="h-4 w-4 text-destructive" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">${stats.outbound.toLocaleString()}</div>
-            <p className="text-xs text-muted-foreground">Total sent</p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Transactions</CardTitle>
-            <CheckCircle className="h-4 w-4 text-accent" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{stats.total}</div>
-            <p className="text-xs text-muted-foreground">Transactions uploaded</p>
+            <TransactionTable transactions={transactions} userType="employee" />
           </CardContent>
         </Card>
       </div>
 
-      <div className="flex gap-4">
-        <Button size="lg" onClick={() => setShowUploadModal(true)} className="gap-2">
-          <Upload className="w-4 h-4" />
-          Upload CSV
-        </Button>
-        <Button variant="outline" size="lg">
-          Export Data
-        </Button>
-      </div>
-
-      <Card>
-        <CardHeader>
-          <CardTitle>Transaction History</CardTitle>
-          <CardDescription>All your uploaded transactions</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <TransactionTable transactions={transactions} />
-        </CardContent>
-      </Card>
-
-      <CSVUploadModal isOpen={showUploadModal} onClose={() => setShowUploadModal(false)} onUpload={handleUpload} />
+      <CSVUploadModal
+        isOpen={showUploadModal}
+        onClose={() => setShowUploadModal(false)}
+        onUpload={handleUpload}
+      />
     </div>
-  )
+  );
 }

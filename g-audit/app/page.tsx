@@ -68,7 +68,7 @@ export default function Home() {
           </p>
         </header>
 
-        <div className="bg-card rounded-lg shadow-2xl overflow-hidden bg-transparent">
+        <div className="bg-card rounded-lg shadow-2xl overflow-hidden">
           {/* Form */}
           <div className="px-6 py-8">
             <form onSubmit={handleSubmit} className="space-y-4">

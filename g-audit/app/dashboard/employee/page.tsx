@@ -26,16 +26,18 @@ export default function EmployeeDashboardPage() {
   return (
     <div className="min-h-screen bg-blue-100 flex flex-col">
       <DashboardHeader
-        title="G-Audit"
         currentView={currentView}
         onViewChange={setCurrentView}
-        onUpload={() => setShowUploadModal(true)}
-        onExport={() => console.log('Export data')}
       />
 
       <main className="flex-1 pt-16 md:pt-0">
         <div className="p-4 sm:p-6 md:p-8">
-          <EmployeeDashboard />
+          <EmployeeDashboard
+            currentView={currentView}
+            onViewChange={setCurrentView}
+            onUpload={() => setShowUploadModal(true)}
+            onExport={() => console.log('Export data')}
+          />
         </div>
       </main>
     </div>

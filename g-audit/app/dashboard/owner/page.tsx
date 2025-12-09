@@ -26,11 +26,8 @@ export default function OwnerDashboardPage() {
   return (
     <div className="min-h-screen gradient-blue-bg flex flex-col">
       <DashboardHeader
-        title="Dashboard"
         currentView={currentView}
         onViewChange={setCurrentView}
-        onUpload={() => setShowUploadModal(true)}
-        onExport={() => console.log('Export data')}
       />
 
       <main className="flex-1 animate-fade-in">
