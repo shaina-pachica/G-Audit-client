@@ -28,7 +28,7 @@ export function TransactionTable({
     <div className="overflow-x-auto">
       <table className="w-full text-sm">
         <thead className="border-b border-border">
-          <tr className="text-muted-foreground">
+          <tr className="text-secondary">
             <th className="text-left py-3 px-4 font-medium">Date & Time</th>
             <th className="text-left py-3 px-4 font-medium">Transfer From</th>
             <th className="text-left py-3 px-4 font-medium">Reference #</th>
@@ -49,7 +49,7 @@ export function TransactionTable({
             <tr
               key={tx.id}
               className={`border-b border-border hover:bg-muted/50 transition-colors ${
-                index % 2 === 0 ? 'bg-background' : 'bg-muted/30'
+                index % 2 === 0 ? 'bg-background' : 'bg-muted/60'
               }`}
             >
               <td className="py-3 px-4 text-muted-foreground">
@@ -64,7 +64,8 @@ export function TransactionTable({
                   tx.type === 'inbound' ? 'text-green-700' : 'text-destructive'
                 }`}
               >
-                {tx.type === 'inbound' ? '+' : '-'}{tx.amount.toLocaleString()}
+                {tx.type === 'inbound' ? '+' : '-'}
+                {tx.amount.toLocaleString()}
               </td>
               {!isEmployee && (
                 <td className="py-3 px-4">{tx.transferTo || '—'}</td>

@@ -130,16 +130,16 @@ export function EmployeeDashboard({
    };
 
   return (
-    <div className="pt-20 pb-8 px-4 sm:px-6 min-h-screen">
-      <div className="space-y-8 max-w-7xl mx-auto">
+    <div className="pt-15 pb-8 px-4 sm:px-6 min-h-screen">
+      <div className="space-y-8 max-w-7xl mx-auto  pt-7">
         {/* Top section with user info and action buttons */}
         <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-6">
           {/* Left:  */}
           <div className="text-left">
-            <h1 className="text-3xl font-bold text-foreground">
+            <h1 className="text-3xl font-semibold text-black/70">
               {user?.username || 'User'}'s Dashboard
             </h1>
-            <p className="text-sm text-muted-foreground mt-1">
+            <p className="text-1xl text-muted-foreground mt-1">
               {new Date().toLocaleDateString('en-US', {
                 weekday: 'long',
                 year: 'numeric',
@@ -153,6 +153,7 @@ export function EmployeeDashboard({
           <div className="flex flex-col gap-3">
             <Button
               onClick={() => setShowUploadModal(true)}
+              variant="secondary"
               className="gap-2 w-full md:w-auto"
             >
               <Upload className="w-4 h-4" />
@@ -160,8 +161,9 @@ export function EmployeeDashboard({
             </Button>
             <Button
               onClick={() => setShowEnterDataModal(true)}
+              size='lg'
               variant="outline"
-              className="gap-2 w-full md:w-auto bg-white/5 border-white/20 hover:bg-white/10"
+              className="gap-2 w-full md:w-auto"
             >
               <Edit3 className="w-4 h-4" />
               Enter Data
@@ -171,48 +173,50 @@ export function EmployeeDashboard({
 
         {/* Balance Cards */}
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-          <Card className="backdrop-blur-sm bg-white/10 border-white/20 hover:bg-white/15 transition-colors">
+          <Card className="border-white/20">
             <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-foreground">
+              <CardTitle className="text-m font-semibold uppercase text-secondary">
                 Starting Balance
               </CardTitle>
-              <CardDescription className="text-xs">
+              <CardDescription className="text-s text-muted-foreground">
                 Opening balance for this period
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">₱10,000.00</div>
-            </CardContent>
-          </Card>
-
-          <Card className="backdrop-blur-sm bg-white/10 border-white/20 hover:bg-white/15 transition-colors">
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-foreground">
-                Ending Balance
-              </CardTitle>
-              <CardDescription className="text-xs">
-                Balance after all transactions
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">
-                ₱{(10000 + stats.inbound - stats.outbound).toLocaleString()}
+              <div className="text-2xl font-semibold text-secondary">
+                ₱10,000
               </div>
             </CardContent>
           </Card>
 
-          <Card className="backdrop-blur-sm bg-white/10 border-white/20 hover:bg-white/15 transition-colors">
+          <Card className="border-white/20">
             <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-foreground">
+              <CardTitle className="text-m font-semibold uppercase text-green-700">
+                Total Inbound
+              </CardTitle>
+              <CardDescription className="text-s text-muted-foreground">
+                Total money received
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-semibold text-green-700">
+                +₱{stats.inbound.toLocaleString()}
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className=" border-white/20">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-m font-semibold uppercase text-black/60">
                 Net Flow
               </CardTitle>
-              <CardDescription className="text-xs">
+              <CardDescription className="text-s text-muted-foreground">
                 Total inbound minus outbound
               </CardDescription>
             </CardHeader>
             <CardContent>
               <div
-                className={`text-2xl font-bold ₱{
+                className={`text-2xl font-semibold text-black/60 ₱{
                   stats.inbound - stats.outbound >= 0
                     ? 'text-primary'
                     : 'text-destructive'
@@ -224,49 +228,51 @@ export function EmployeeDashboard({
             </CardContent>
           </Card>
 
-          <Card className="backdrop-blur-sm bg-white/10 border-white/20 hover:bg-white/15 transition-colors">
+          <Card className="border-white/20">
             <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-foreground">
-                Total Inbound
+              <CardTitle className="text-m font-semibold uppercase text-secondary">
+                Ending Balance
               </CardTitle>
-              <CardDescription className="text-xs">
-                Total money received
+              <CardDescription className="text-s text-muted-foreground">
+                Balance after all transactions
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-primary">
-                +₱{stats.inbound.toLocaleString()}
+              <div className="text-2xl font-semibold text-secondary">
+                ₱{(10000 + stats.inbound - stats.outbound).toLocaleString()}
               </div>
             </CardContent>
           </Card>
 
-          <Card className="backdrop-blur-sm bg-white/10 border-white/20 hover:bg-white/15 transition-colors">
+          <Card className="border-white/20">
             <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-foreground">
+              <CardTitle className="text-m font-semibold uppercase text-destructive">
                 Total Outbound
               </CardTitle>
-              <CardDescription className="text-xs">
+              <CardDescription className="text-s text-muted-foreground">
                 Total money sent
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-destructive">
+              <div className="text-2xl font-semibold text-destructive">
                 -₱{stats.outbound.toLocaleString()}
               </div>
             </CardContent>
           </Card>
 
-          <Card className="backdrop-blur-sm bg-white/10 border-white/20 hover:bg-white/15 transition-colors">
+          <Card className="border-white/20">
             <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-foreground">
+              <CardTitle className="text-m font-semibold uppercase text-black/60">
                 Total Transactions
               </CardTitle>
-              <CardDescription className="text-xs">
+              <CardDescription className="text-s text-muted-foreground">
                 Number of transactions uploaded
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{stats.total}</div>
+              <div className="text-2xl font-semibold text-black/60">
+                {stats.total}
+              </div>
             </CardContent>
           </Card>
         </div>
@@ -274,10 +280,10 @@ export function EmployeeDashboard({
         {/* Transaction History */}
         <Card className="border-white/20">
           <CardHeader>
-            <CardTitle className="text-secondary">
+            <CardTitle className="text-black/70 text-3xl">
               Transaction History
             </CardTitle>
-            <CardDescription>Your GCash transactions</CardDescription>
+            <CardDescription className='text-muted-foreground'>Your GCash transactions</CardDescription>
           </CardHeader>
           <CardContent>
             <TransactionTable transactions={transactions} userType="employee" />
@@ -290,7 +296,7 @@ export function EmployeeDashboard({
         onClose={() => setShowUploadModal(false)}
         onUpload={handleUpload}
       />
-      
+
       <EnterDataModal
         isOpen={showEnterDataModal}
         onClose={() => setShowEnterDataModal(false)}

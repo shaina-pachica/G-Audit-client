@@ -26,23 +26,23 @@ export function DashboardHeader({
   ]
 
   return (
-    <div className="fixed top-0 left-0 right-0 z-50 backdrop-blur-md bg-white/50">
+    <div className="fixed top-0 left-0 right-0 z-50 backdrop-blur-md bg-white/40 py-2 ">
       <div className="flex items-center justify-between h-16 px-4 md:px-8 lg:px-12">
-        {/* Right side: Title and user info */}
+        {/* Right side: Title */}
         <div className="flex flex-col order-1 md:order-1">
-          <h1 className="text-3xl font-bold text-foreground">G-audit</h1>
+          <h1 className="text-3xl font-bold text-secondary">G-audit</h1>
         </div>
 
-        {/* Center: View dropdown */}
-        <div className="flex gap-1 sm:gap-2 bg-white/5 p-1 rounded-lg order-2">
+        {/* Center: View tabs */}
+        <div className="flex gap-1 sm:gap-2 rounded-lg order-2">
           {tabs.map((tab) => (
             <button
               key={tab.value}
               onClick={() => onViewChange(tab.value)}
-              className={`px-3 sm:px-4 py-2 text-xs sm:text-sm font-medium rounded-md transition-all duration-300 ${
+              className={`px-3 sm:px-4 py-2 text-xl font-medium rounded-md transition-all duration-200 ${
                 currentView === tab.value
-                  ? 'bg-transparent text-foreground shadow-lg ring-1 ring-white/20 backdrop-blur-0'
-                  : 'text-muted-foreground hover:text-foreground bg-white/5 hover:bg-white/10'
+                  ? 'bg-black/5 text-black/70 mt-10'
+                  : 'text-gray-400'
               }`}
             >
               {tab.label}
@@ -53,10 +53,10 @@ export function DashboardHeader({
         {/* Left side: Upload and Export buttons */}
         <div className="flex gap-2 order-2 md:order-3">
           <Button
-            variant="ghost"
-            size="sm"
+            variant="default"
+            size="lg"
             onClick={handleLogout}
-            className="gap-2 text-muted-foreground hover:text-foreground"
+            className="gap-2 text-primary"
           >
             <LogOut className="w-4 h-4" />
             <span className="hidden sm:inline">Logout</span>
