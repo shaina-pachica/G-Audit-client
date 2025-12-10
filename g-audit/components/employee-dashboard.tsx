@@ -12,6 +12,7 @@ import { Upload, Edit3 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { TransactionTable } from './transaction-table';
 import { CSVUploadModal } from './csv-upload-modal';
+import { EnterDataModal } from './enter-data-modal';
 
 interface Transaction {
   id: string;
@@ -37,6 +38,7 @@ export function EmployeeDashboard({
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [user, setUser] = useState<any>(null);
   const [showUploadModal, setShowUploadModal] = useState(false);
+  const [showEnterDataModal, setShowEnterDataModal] = useState(false);
   const [stats, setStats] = useState({ inbound: 0, outbound: 0, total: 0 });
 
   useEffect(() => {
@@ -122,6 +124,11 @@ export function EmployeeDashboard({
     setShowUploadModal(false);
   };
 
+   const handleAddTransaction = (newTransaction: Transaction) => {
+     setTransactions([...transactions, newTransaction]);
+     updateStats([...transactions, newTransaction]);
+   };
+
   return (
     <div className="pt-20 pb-8 px-4 sm:px-6 min-h-screen">
       <div className="space-y-8 max-w-7xl mx-auto">
@@ -152,6 +159,7 @@ export function EmployeeDashboard({
               Upload PDF
             </Button>
             <Button
+              onClick={() => setShowEnterDataModal(true)}
               variant="outline"
               className="gap-2 w-full md:w-auto bg-white/5 border-white/20 hover:bg-white/10"
             >
@@ -266,7 +274,9 @@ export function EmployeeDashboard({
         {/* Transaction History */}
         <Card className="border-white/20">
           <CardHeader>
-            <CardTitle className='text-secondary'>Transaction History</CardTitle>
+            <CardTitle className="text-secondary">
+              Transaction History
+            </CardTitle>
             <CardDescription>Your GCash transactions</CardDescription>
           </CardHeader>
           <CardContent>
@@ -279,6 +289,12 @@ export function EmployeeDashboard({
         isOpen={showUploadModal}
         onClose={() => setShowUploadModal(false)}
         onUpload={handleUpload}
+      />
+      
+      <EnterDataModal
+        isOpen={showEnterDataModal}
+        onClose={() => setShowEnterDataModal(false)}
+        onSubmit={handleAddTransaction}
       />
     </div>
   );
