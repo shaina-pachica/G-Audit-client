@@ -7,6 +7,8 @@ import type React from 'react';
 import { Lock, Mail, BarChart3 } from 'lucide-react';
 import Image from 'next/image';
 import { DeveloperCredit } from '../components/devcredit';
+import { useLogin } from './services/auth/useLogin';
+import {toast} from "sonner"
 
 export default function Home() {
   const router = useRouter();
@@ -15,6 +17,7 @@ export default function Home() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [role, setRole] = useState<'employee' | 'owner'>('employee');
+  const loginMutation = useLogin()
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -22,24 +25,27 @@ export default function Home() {
     setLoading(true);
 
     try {
-      const response = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: username, password, role }),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) throw new Error(data.error || 'Login failed');
-
-      localStorage.setItem('user', JSON.stringify(data.user));
-      localStorage.setItem('token', data.token);
-
-      if (role === 'owner') {
-        router.push('/dashboard/owner');
+     toast.promise(
+  loginMutation.mutateAsync({
+    username,
+    password,
+  }),
+  {
+    loading: "Checking server, wait lang po",
+    success: (res) => {
+      localStorage.setItem("accessToken", res.accessToken)
+      if(res.roles.includes("Owner")){
+         router.push('/dashboard/owner');
       } else {
         router.push('/dashboard/employee');
       }
+      return "Welcome po"
+    },
+    error: (error) => {
+      return "May error po"
+    },
+  }
+)
     } catch (err: any) {
       setError(err.message);
     } finally {
