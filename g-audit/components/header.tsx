@@ -4,8 +4,8 @@ import { LogOut, ChevronDown } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 
 interface DashboardHeaderProps {
-  currentView: 'daily' | 'weekly' | 'monthly'
-  onViewChange: (view: 'daily' | 'weekly' | 'monthly') => void
+  currentView: 'previous audit' | 'latest audit'
+  onViewChange: (view: 'previous audit' | 'latest audit') => void
 }
 
 export function DashboardHeader({
@@ -20,9 +20,8 @@ export function DashboardHeader({
   }
 
   const tabs = [
-    { label: 'Daily', value: 'daily' as const },
-    { label: 'Weekly', value: 'weekly' as const},
-    { label: 'Monthly', value: 'monthly' as const },
+    { label: 'Previous Audit', value: 'previous audit' as const },
+    { label: 'Latest Audit', value: 'latest audit' as const},
   ]
 
   return (

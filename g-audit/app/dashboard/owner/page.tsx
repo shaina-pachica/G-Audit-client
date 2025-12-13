@@ -8,7 +8,7 @@ import { DashboardHeader } from "../../../components/header"
 export default function OwnerDashboardPage() {
   const router = useRouter()
   const [isAuthenticated, setIsAuthenticated] = useState(false)
-  const [currentView, setCurrentView] = useState<"daily" | "weekly" | "monthly">("daily")
+  const [currentView, setCurrentView] = useState<"previous audit" | "latest audit">("latest audit")
   const [ShowUploadModal, setShowUploadModal] = useState(false)
   const [user, setUser] = useState<any>(null)
 

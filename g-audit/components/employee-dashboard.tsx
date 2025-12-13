@@ -27,8 +27,8 @@ interface Transaction {
 }
 
 interface EmployeeDashboardProps {
-  currentView: 'daily' | 'weekly' | 'monthly';
-  onViewChange: (view: 'daily' | 'weekly' | 'monthly') => void;
+  currentView: 'previous audit' | 'latest audit';
+  onViewChange: (view: 'previous audit' | 'latest audit') => void;
   onUpload: () => void;
   onExport: () => void;
 }
@@ -137,7 +137,7 @@ export function EmployeeDashboard({
           {/* Left:  */}
           <div className="text-left">
             <h1 className="text-3xl font-semibold text-black/70">
-              {user?.username || 'User'}'s Dashboard
+              {user?.username || 'Employee'}'s Dashboard
             </h1>
             <p className="text-1xl text-muted-foreground mt-1">
               {new Date().toLocaleDateString('en-US', {

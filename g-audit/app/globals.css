@@ -27,7 +27,7 @@
   --chart-1: oklch(0.48 0.15 254); /* Teal */
   --chart-2: oklch(0.65 0.1 254); /* Light teal */
   --chart-3: oklch(0.4 0.12 254); /* Dark teal */
-  --chart-4: oklch(0.7 0.02 264); /* Light gray */
+  --chart-4: oklch(67.318% 0.20328 144.027); /* Light gray */
   --chart-5: oklch(0.45 0.02 264); /* Medium gray */
   --radius: 0.375rem;
   --sidebar: oklch(0.985 0.001 0); /* Almost white */

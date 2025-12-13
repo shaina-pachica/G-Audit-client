@@ -49,7 +49,7 @@ export function AggregationChart({ transactions, employees }: { transactions: Tr
           formatter={(value: any) => `$${value.toLocaleString()}`}
         />
         <Legend />
-        <Bar dataKey="Inbound" fill="var(--color-primary)" />
+        <Bar dataKey="Inbound" fill="var(--chart-4)" />
         <Bar dataKey="Outbound" fill="var(--color-destructive)" />
       </BarChart>
     </ResponsiveContainer>

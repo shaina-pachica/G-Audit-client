@@ -6,8 +6,8 @@ export function DeveloperCredit() {
       <Code2 className="w-4 h-4 text-gray-500" />
       <span className="text-xs text-gray-600">
         This is exclusively developed for{' '}
-        <span className="text-[#727e90]">CNG Enterprises</span> by{' '}
-        <span className="text-[#727e90]">Your Name</span>
+        <span className="text-[#727e90]">CNG Enterprises</span>{' '}
+        <span className="text-[#727e90]"></span>
       </span>
     </div>
   );

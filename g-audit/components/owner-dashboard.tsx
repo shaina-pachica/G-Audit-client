@@ -21,6 +21,7 @@ import { Button } from '@/components/ui/button';
 import { TransactionTable } from './transaction-table';
 import { AggregationChart } from './aggregation-chart';
 import { EmployeeBalanceCards } from './employee-balance-cards';
+import { DeveloperCredit } from './devcredit';
 
 interface Transaction {
   id: string;
@@ -161,10 +162,10 @@ export function OwnerDashboard() {
         <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-6">
           {/* Left: Action Buttons */}
           <div className="text-left">
-            <h1 className="text-3xl font-bold text-foreground">
+            <h1 className="text-3xl font-bold text-black/70">
               Owner Dashboard
             </h1>
-            <p className="text-sm text-muted-foreground mt-1">
+            <p className="text-1xl text-muted-foreground mt-1">
               {new Date().toLocaleDateString('en-US', {
                 weekday: 'long',
                 year: 'numeric',
@@ -176,13 +177,13 @@ export function OwnerDashboard() {
 
           {/* Right: User Info */}
           <div className="flex flex-col gap-3">
-            <Button className="gap-2 w-full md:w-auto">
+            <Button variant="secondary" className="gap-2 w-full md:w-auto">
               <Upload className="w-4 h-4" />
               Upload PDF
             </Button>
             <Button
               variant="outline"
-              className="gap-2 w-full md:w-auto bg-white/5 border-white/20 hover:bg-white/10"
+              className="gap-2 w-full md:w-auto"
             >
               <UserPlus className="w-4 h-4" />
               Add Employee
@@ -352,6 +353,7 @@ export function OwnerDashboard() {
           </CardContent>
         </Card>
       </div>
+      <DeveloperCredit/>
     </div>
   );
 }
