@@ -1,63 +1,51 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
 import { Upload, Edit3 } from 'lucide-react';
+
 import { Button } from '@/components/ui/button';
-import { TransactionTable } from '../../../components/transaction-table';
-import { CSVUploadModal } from '../../../components/csv-upload-modal';
-import { EnterDataModal } from '../../../components/enter-data-modal';
-import { BalanceSummaryCards } from '../../../components/balance-summary-cards';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 
-interface Transaction {
-  id: string;
-  type: 'inbound' | 'outbound';
-  amount: number;
-  reference: string;
-  description: string;
-  date: string;
-  status: 'pending' | 'completed' | 'failed';
-  transferFrom?: string;
-  balance?: number;
-}
+import { DashboardHeader } from '@/components/header';
+import { TransactionTable } from '@/components/transaction-table';
+import { TransactionFilterSearch } from '@/components/transaction-filter-search';
+import { BalanceSummaryCards } from '@/components/balance-summary-cards';
 
-interface EmployeeDashboardProps {
-  currentView: 'previous audit' | 'latest audit';
-  onViewChange: (view: 'previous audit' | 'latest audit') => void;
-  onUpload: () => void;
-  onExport: () => void;
-}
+import { CSVUploadModal } from '@/components/csv-upload-modal';
+import { EnterDataModal } from '@/components/enter-data-modal';
 
-export function EmployeeDashboard({
-}: EmployeeDashboardProps) {
-  const [transactions, setTransactions] = useState<Transaction[]>([]);
+import { useTransactionFilters } from '@/hooks/use-transaction-filters';
+import { useTransactionStats } from '@/hooks/use-transaction-stats';
+import { DashboardPageHeader } from '@/components/dashboard-page-header';
+
+//import { EmployeeTransaction } from '@/transaction/transaction';
+
+const STARTING_BALANCE = 10000;
+
+export function EmployeeDashboard() {
+  const [transactions, setTransactions] = useState<EmployeeTransaction[]>([]);
   const [user, setUser] = useState<any>(null);
+
+  const [selectedType, setSelectedType] = useState('all');
+  const [searchRef, setSearchRef] = useState('');
+
   const [showUploadModal, setShowUploadModal] = useState(false);
   const [showEnterDataModal, setShowEnterDataModal] = useState(false);
-  const [stats, setStats] = useState({ inbound: 0, outbound: 0, total: 0 });
 
   useEffect(() => {
     const userData = localStorage.getItem('user');
     if (userData) setUser(JSON.parse(userData));
 
-    // Load mock transactions
-    const mockTxns: Transaction[] = [
+    setTransactions([
       {
         id: '1',
         type: 'inbound',
         amount: 5000,
-        reference: '5034222433857',
+        reference: 'INV-001',
         description: 'Client payment',
-        date: new Date(Date.now() - 86400000).toISOString(),
+        date: new Date().toISOString(),
         status: 'completed',
-        transferFrom:
-          'Received GCash from CARD Bank Inc. with account ending in 5408 and invno:20251111CBMFPHM1XXXB000000024058750',
+        transferFrom: 'GCash 09171234567',
         balance: 15000,
       },
       {
@@ -67,7 +55,6 @@ export function EmployeeDashboard({
         reference: 'EXP-001',
         description: 'Vendor payment',
         date: new Date().toISOString(),
-        status: 'completed',
         transferFrom: 'Card ending in 5408',
         balance: 13800,
       },
@@ -104,97 +91,80 @@ export function EmployeeDashboard({
         transferFrom: 'BDO Credit Card ending in 4521',
         balance: 19800,
       },
-    ];
-    setTransactions(mockTxns);
-    updateStats(mockTxns);
+    ]);
   }, []);
 
-  const updateStats = (txns: Transaction[]) => {
-    const inbound = txns
-      .filter((t) => t.type === 'inbound')
-      .reduce((sum, t) => sum + t.amount, 0);
-    const outbound = txns
-      .filter((t) => t.type === 'outbound')
-      .reduce((sum, t) => sum + t.amount, 0);
-    setStats({ inbound, outbound, total: txns.length });
-  };
+  const filteredTransactions = useTransactionFilters({
+    transactions,
+    selectedType,
+    searchRef,
+    getType: (t) => t.type,
+    getSearchableText: (t) => `${t.reference} ${t.description}`,
+  });
 
-  const handleUpload = (newTransactions: Transaction[]) => {
-    setTransactions([...transactions, ...newTransactions]);
-    updateStats([...transactions, ...newTransactions]);
-    setShowUploadModal(false);
-  };
-
-  const handleAddTransaction = (newTransaction: Transaction) => {
-    setTransactions([...transactions, newTransaction]);
-    updateStats([...transactions, newTransaction]);
-  };
-
-  const startingBalance = 10000;
-  const inbound = stats.inbound;
-  const outbound = stats.outbound;
+  const stats = useTransactionStats(
+    filteredTransactions,
+    (t) => t.type,
+    (t) => t.amount
+  );
 
   return (
-    <div className="pt-15 pb-8 px-4 sm:px-6 min-h-screen">
-      <div className="space-y-8 max-w-7xl mx-auto  pt-7">
-        {/* Top section with user info and action buttons */}
-        <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-6">
-          {/* Left:  */}
-          <div className="text-left">
-            <h1 className="text-3xl font-semibold text-black/70">
-              {user?.username || 'Employee'}'s Dashboard
-            </h1>
-            <p className="text-1xl text-muted-foreground mt-1">
-              {new Date().toLocaleDateString('en-US', {
-                weekday: 'long',
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric',
-              })}
-            </p>
-          </div>
-
-          {/* Right:*/}
-          <div className="flex flex-col gap-3">
-            <Button
-              onClick={() => setShowUploadModal(true)}
-              variant="secondary"
-              className="gap-2 w-full md:w-auto"
-            >
-              <Upload className="w-4 h-4" />
-              Upload PDF
-            </Button>
-            <Button
-              onClick={() => setShowEnterDataModal(true)}
-              size='lg'
-              variant="outline"
-              className="gap-2 w-full md:w-auto"
-            >
-              <Edit3 className="w-4 h-4" />
-              Enter Data
-            </Button>
-          </div>
-        </div>
-
+    <div className="pt-16 pb-8 px-4 min-h-screen">
+      <div className="max-w-7xl mx-auto space-y-8">
+        <DashboardPageHeader
+  title={`${user?.username || 'Employee'}'s Dashboard`}
+  actions={
+    <>
+      <Button
+        variant="secondary"
+        onClick={() => setShowUploadModal(true)}
+        className="gap-2"
+      >
+        <Upload className="w-4 h-4" />
+        Upload PDF
+      </Button>
+      <Button
+        variant="outline"
+        onClick={() => setShowEnterDataModal(true)}
+        className="gap-2"
+      >
+        <Edit3 className="w-4 h-4" />
+        Enter Data
+      </Button>
+    </>
+  }
+/>
 
         <BalanceSummaryCards
           currency="₱"
-          startingBalance={startingBalance}
-          inbound={inbound}
-          outbound={outbound}
-          transactionCount={stats.total}
+          startingBalance={STARTING_BALANCE}
+          inbound={stats.inbound}
+          outbound={stats.outbound}
+          transactionCount={stats.transactionCount}
         />
 
-        {/* Transaction History */}
-        <Card className="border-white/20">
+        <TransactionFilterSearch
+          title="Filter Transactions"
+          description="Filter your transactions by type or reference"
+          showEmployeeFilter={false}
+          selectedEmployee="all"
+          onEmployeeChange={() => {}}
+          selectedType={selectedType}
+          onTypeChange={setSelectedType}
+          searchRef={searchRef}
+          onSearchRefChange={setSearchRef}
+        />
+
+        <Card>
           <CardHeader>
-            <CardTitle className="text-black/70 text-3xl">
-              Transaction History
-            </CardTitle>
-            <CardDescription className='text-muted-foreground'>Your GCash transactions</CardDescription>
+            <CardTitle>Transaction History</CardTitle>
+            <CardDescription>Your GCash transactions</CardDescription>
           </CardHeader>
           <CardContent>
-            <TransactionTable transactions={transactions} userType="employee" />
+            <TransactionTable
+              transactions={filteredTransactions}
+              userType="employee"
+            />
           </CardContent>
         </Card>
       </div>
@@ -202,13 +172,13 @@ export function EmployeeDashboard({
       <CSVUploadModal
         isOpen={showUploadModal}
         onClose={() => setShowUploadModal(false)}
-        onUpload={handleUpload}
+        onUpload={(txns) => setTransactions((prev) => [...prev, ...txns])}
       />
 
       <EnterDataModal
         isOpen={showEnterDataModal}
         onClose={() => setShowEnterDataModal(false)}
-        onSubmit={handleAddTransaction}
+        onSubmit={(txn) => setTransactions((prev) => [...prev, txn])}
       />
     </div>
   );
