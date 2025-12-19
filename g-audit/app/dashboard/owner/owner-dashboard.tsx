@@ -18,10 +18,12 @@ import {
 } from '@/components/ui/select';
 import { Upload, UserPlus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { TransactionTable } from './transaction-table';
+import { TransactionTable } from '../../../components/transaction-table';
 import { AggregationChart } from './aggregation-chart';
-import { EmployeeBalanceCards } from './employee-balance-cards';
-import { DeveloperCredit } from './devcredit';
+import { DeveloperCredit } from '../../../components/devcredit';
+import { BalanceSummaryCards } from '../../../components/balance-summary-cards';
+
+const startingBalance = 50000;
 
 interface Transaction {
   id: string;
@@ -191,73 +193,13 @@ export function OwnerDashboard() {
           </div>
         </div>
 
-        {/* Balance Cards */}
-        <div className="grid gap-4 md:grid-cols-3">
-          <Card className="backdrop-blur-sm bg-white/10 border-white/20">
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium">
-                Starting Balance
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">$50,000.00</div>
-            </CardContent>
-          </Card>
-
-          <Card className="backdrop-blur-sm bg-white/10 border-white/20">
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium">
-                Ending Balance
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">
-                $
-                {(
-                  50000 +
-                  stats.totalInbound -
-                  stats.totalOutbound
-                ).toLocaleString()}
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="backdrop-blur-sm bg-white/10 border-white/20">
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium">Net Flow</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div
-                className={`text-2xl font-bold ${
-                  stats.totalInbound - stats.totalOutbound >= 0
-                    ? 'text-primary'
-                    : 'text-destructive'
-                }`}
-              >
-                {stats.totalInbound - stats.totalOutbound >= 0 ? '+' : '-'}$
-                {Math.abs(
-                  stats.totalInbound - stats.totalOutbound
-                ).toLocaleString()}
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Employee Account Balance */}
-        <Card className="mt-8">
-          <CardHeader>
-            <CardTitle>Employee Account Balance</CardTitle>
-            <CardDescription>
-              Current balance for each employee (inbound minus outbound)
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <EmployeeBalanceCards
-              transactions={transactions}
-              employees={employees}
-            />
-          </CardContent>
-        </Card>
+        <BalanceSummaryCards
+          currency="$"
+          startingBalance={startingBalance}
+          inbound={stats.totalInbound}
+          outbound={stats.totalOutbound}
+          transactionCount={stats.transactionCount}
+        />
 
         {/* Filtering & Search */}
         <div className="grid gap-4 lg:grid-cols-3 mt-8">
@@ -353,7 +295,7 @@ export function OwnerDashboard() {
           </CardContent>
         </Card>
       </div>
-      <DeveloperCredit/>
+      <DeveloperCredit />
     </div>
   );
 }

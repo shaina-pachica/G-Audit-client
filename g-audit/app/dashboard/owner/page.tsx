@@ -1,6 +1,6 @@
 "use client"
 
-import { OwnerDashboard } from "@/components/owner-dashboard"
+import { OwnerDashboard } from "@/app/dashboard/owner/owner-dashboard"
 import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import { DashboardHeader } from "../../../components/header"

@@ -1,6 +1,6 @@
 "use client"
 
-import { EmployeeDashboard } from "@/components/employee-dashboard"
+import { EmployeeDashboard } from "@/app/dashboard/employee/employee-dashboard"
 import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import { DashboardHeader } from "../../../components/header"

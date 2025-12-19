@@ -10,9 +10,10 @@ import {
 } from '@/components/ui/card';
 import { Upload, Edit3 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { TransactionTable } from './transaction-table';
-import { CSVUploadModal } from './csv-upload-modal';
-import { EnterDataModal } from './enter-data-modal';
+import { TransactionTable } from '../../../components/transaction-table';
+import { CSVUploadModal } from '../../../components/csv-upload-modal';
+import { EnterDataModal } from '../../../components/enter-data-modal';
+import { BalanceSummaryCards } from '../../../components/balance-summary-cards';
 
 interface Transaction {
   id: string;
@@ -124,10 +125,14 @@ export function EmployeeDashboard({
     setShowUploadModal(false);
   };
 
-   const handleAddTransaction = (newTransaction: Transaction) => {
-     setTransactions([...transactions, newTransaction]);
-     updateStats([...transactions, newTransaction]);
-   };
+  const handleAddTransaction = (newTransaction: Transaction) => {
+    setTransactions([...transactions, newTransaction]);
+    updateStats([...transactions, newTransaction]);
+  };
+
+  const startingBalance = 10000;
+  const inbound = stats.inbound;
+  const outbound = stats.outbound;
 
   return (
     <div className="pt-15 pb-8 px-4 sm:px-6 min-h-screen">
@@ -171,111 +176,14 @@ export function EmployeeDashboard({
           </div>
         </div>
 
-        {/* Balance Cards */}
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-          <Card className="border-white/20">
-            <CardHeader className="pb-2">
-              <CardTitle className="text-m font-semibold uppercase text-secondary">
-                Starting Balance
-              </CardTitle>
-              <CardDescription className="text-s text-muted-foreground">
-                Opening balance for this period
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-semibold text-secondary">
-                ₱10,000
-              </div>
-            </CardContent>
-          </Card>
 
-          <Card className="border-white/20">
-            <CardHeader className="pb-2">
-              <CardTitle className="text-m font-semibold uppercase text-green-700">
-                Total Inbound
-              </CardTitle>
-              <CardDescription className="text-s text-muted-foreground">
-                Total money received
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-semibold text-green-700">
-                +₱{stats.inbound.toLocaleString()}
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className=" border-white/20">
-            <CardHeader className="pb-2">
-              <CardTitle className="text-m font-semibold uppercase text-black/60">
-                Net Flow
-              </CardTitle>
-              <CardDescription className="text-s text-muted-foreground">
-                Total inbound minus outbound
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div
-                className={`text-2xl font-semibold text-black/60 ₱{
-                  stats.inbound - stats.outbound >= 0
-                    ? 'text-primary'
-                    : 'text-destructive'
-                }`}
-              >
-                {stats.inbound - stats.outbound >= 0 ? '+' : '-'}₱
-                {Math.abs(stats.inbound - stats.outbound).toLocaleString()}
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="border-white/20">
-            <CardHeader className="pb-2">
-              <CardTitle className="text-m font-semibold uppercase text-secondary">
-                Ending Balance
-              </CardTitle>
-              <CardDescription className="text-s text-muted-foreground">
-                Balance after all transactions
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-semibold text-secondary">
-                ₱{(10000 + stats.inbound - stats.outbound).toLocaleString()}
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="border-white/20">
-            <CardHeader className="pb-2">
-              <CardTitle className="text-m font-semibold uppercase text-destructive">
-                Total Outbound
-              </CardTitle>
-              <CardDescription className="text-s text-muted-foreground">
-                Total money sent
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-semibold text-destructive">
-                -₱{stats.outbound.toLocaleString()}
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="border-white/20">
-            <CardHeader className="pb-2">
-              <CardTitle className="text-m font-semibold uppercase text-black/60">
-                Total Transactions
-              </CardTitle>
-              <CardDescription className="text-s text-muted-foreground">
-                Number of transactions uploaded
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-semibold text-black/60">
-                {stats.total}
-              </div>
-            </CardContent>
-          </Card>
-        </div>
+        <BalanceSummaryCards
+          currency="₱"
+          startingBalance={startingBalance}
+          inbound={inbound}
+          outbound={outbound}
+          transactionCount={stats.total}
+        />
 
         {/* Transaction History */}
         <Card className="border-white/20">
